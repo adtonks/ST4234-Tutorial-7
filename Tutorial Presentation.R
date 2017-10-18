@@ -1,5 +1,5 @@
 # Adam Tonks, Yale-NUS College
-
+### Question 1 ###
 ### PART A ###
 # load package for Inverse-Gamma
 library(LearnBayes)
@@ -72,3 +72,29 @@ var(mu_samp2)
 # compare the means and variances
 (mean(mu_samp2) - mean(mu_samp1)) / mean(mu_samp1)
 (var(mu_samp2) - var(mu_samp1)) / var(mu_samp1)
+
+### Question 2 ###
+# function for derivative of h
+h_deriv <- function(x) {
+  return(5*(1-exp(x)/(1+exp(x))) - (1/0.25^2) * x)
+}
+
+# remember that x is a probability
+uniroot(h_deriv, c(-10, 10))
+
+# function for h to check analytical computations of h' and h''
+h <- function(x) {
+  return(log(exp(5*x)/(1+exp(x))^5) - x^2/(2*0.25^2))
+}
+
+# minimize h and check results
+results <- optim(0.1, h, hessian=TRUE, control=list(fnscale=-1), lower=-10, upper=10, method="Brent")
+theta_hat <- results$par
+neg_inv_hess <- -(results$hessian)^-1
+
+# values are consistent with those we calculated above
+theta_hat
+neg_inv_hess
+
+# calculate probability that theta is positive using normal approximation
+1 - pnorm(0, theta_hat, sqrt(neg_inv_hess))
