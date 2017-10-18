@@ -55,6 +55,7 @@ lambda_mat <- rep(lambda_grid, length(mu_grid))
 mu_mat <- rep(mu_grid, each = length(lambda_grid))
 
 # sample from points on discrete approximation according to the probabilites
+set.seed(432)
 theta_index <- sample(seq_len(length(lambda_grid)*length(mu_grid)), 10000, replace=TRUE, prob=probs)
 
 # plot the samples onto the contour plot to check that we did not exclude regions where draws are plausible
