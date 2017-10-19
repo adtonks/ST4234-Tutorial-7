@@ -12,7 +12,7 @@ S <- sum((x-y_bar)^2)
 
 # generate the samples
 set.seed(412)
-sigma_sq <- rigamma(10000, n/2, S/2)
+sigma_sq <- rigamma(10000, (n-1)/2, S/2)
 set.seed(412)
 mu_samp1 <- rnorm(10000, y_bar, sqrt(sigma_sq/n))
 
@@ -36,7 +36,7 @@ probs <- rep(NA, length(mu_grid) * length(lambda_grid))
 # populate the points for discrete approximation
 for(i in seq_along(mu_grid)) {
   for(j in seq_along(lambda_grid)) {
-    probs[(i-1)*length(lambda_grid) + j] <- posterior_p(mu_grid[i], lambda_grid[j]) * 0.01^2 / 0.001682444
+    probs[(i-1)*length(lambda_grid) + j] <- posterior_p(mu_grid[i], lambda_grid[j]) * 0.01^2
   }
 }
 
@@ -59,9 +59,10 @@ set.seed(432)
 theta_index <- sample(seq_len(length(lambda_grid)*length(mu_grid)), 10000, replace=TRUE, prob=probs)
 
 # plot the samples onto the contour plot to check that we did not exclude regions where draws are plausible
+mu_samp2 <- mu_mat[theta_index]
 par(mar=c(5, 5, 5, 5))
-filled.contour(lambda_grid, mu_grid, probs_mat, main="Posterior joint density",
-               xlab="lambda", ylab="mu", plot.axes={points(lambda_mat[theta_index], mu_mat[theta_index])})
+filled.contour(lambda_grid, mu_grid, probs_mat, main="Posterior joint density", xlab="lambda", ylab="mu",
+               plot.axes={points(lambda_mat[theta_index], mu_samp2, cex=0.1, lwd=0.2); axis(1); axis(2)})
 par(op)
 
 # find mean and variance
